@@ -1,0 +1,44 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class InitialSetting extends Model
+{
+    protected $table = 'inicialsettings';
+
+    protected $fillable = [
+        'cuit',
+        'razonsocial',
+        'direccion',
+        'telefono',
+        'email',
+        'codigopostal',
+        'localidad',
+        'provincia',
+        'condicioniva',
+        'inicioactividades',
+        'puntoventa',
+        'nombrefantasia',
+        'domiciliocomercial',
+        'tagline',
+        'logo',
+        'numfactura',
+        'numremito',
+        'numpresupuesto',
+        'numpago',
+        'numrecibo',
+    ];
+
+    protected $casts = [
+        'cuit' => 'integer',
+        'codigopostal' => 'integer',
+        'puntoventa' => 'integer',
+        'numfactura' => 'integer',
+        'numremito' => 'integer',
+        'numpresupuesto' => 'integer',
+        'numpago' => 'integer',
+        'numrecibo' => 'integer',
+    ];
+}

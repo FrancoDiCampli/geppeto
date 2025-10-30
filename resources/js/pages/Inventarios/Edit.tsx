@@ -1,0 +1,117 @@
+import { Head, useForm } from '@inertiajs/react';
+import AppLayout from '@/layouts/app-layout';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+
+interface Inventario {
+    id: number;
+    cantidad: number;
+    lote?: number;
+    vencimiento?: string;
+    articulo_id: number;
+    supplier_id?: number;
+}
+
+interface Articulo {
+    id: number;
+    articulo: string;
+    codarticulo: string;
+}
+
+interface Supplier {
+    id: number;
+    razonsocial: string;
+}
+
+interface Props {
+    inventario: Inventario;
+    articulos: Articulo[];
+    suppliers: Supplier[];
+}
+
+export default function Edit({ inventario, articulos, suppliers }: Props) {
+    const { data, setData, put, processing, errors } = useForm({
+        cantidad: inventario.cantidad.toString(),
+        lote: inventario.lote?.toString() || '',
+        vencimiento: inventario.vencimiento || '',
+        articulo_id: inventario.articulo_id.toString(),
+        supplier_id: inventario.supplier_id?.toString() || '',
+    });
+
+    const submit = (e: React.FormEvent) => {
+        e.preventDefault();
+        put(route('inventarios.update', inventario.id));
+    };
+
+    return (
+        <AppLayout>
+            <Head title="Editar Inventario" />
+            
+            <Card className="max-w-2xl">
+                <CardHeader>
+                    <CardTitle>Editar Inventario</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <form onSubmit={submit} className="space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="md:col-span-2">
+                                <Label htmlFor="articulo_id">Artículo *</Label>
+                                <Select value={data.articulo_id} onValueChange={(value) => setData('articulo_id', value)}>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Seleccionar artículo" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {articulos.map((articulo) => (
+                                            <SelectItem key={articulo.id} value={articulo.id.toString()}>
+                                                {articulo.codarticulo} - {articulo.articulo}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                {errors.articulo_id && <p className="text-sm text-red-600 mt-1">{errors.articulo_id}</p>}
+                            </div>
+                            <div>
+                                <Label htmlFor="cantidad">Cantidad *</Label>
+                                <Input
+                                    id="cantidad"
+                                    type="number"
+                                    value={data.cantidad}
+                                    onChange={(e) => setData('cantidad', e.target.value)}
+                                    error={errors.cantidad}
+                                />
+                            </div>
+                            <div>
+                                <Label htmlFor="supplier_id">Proveedor</Label>
+                                <Select value={data.supplier_id} onValueChange={(value) => setData('supplier_id', value)}>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Seleccionar proveedor" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {suppliers.map((supplier) => (
+                                            <SelectItem key={supplier.id} value={supplier.id.toString()}>
+                                                {supplier.razonsocial}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                {errors.supplier_id && <p className="text-sm text-red-600 mt-1">{errors.supplier_id}</p>}
+                            </div>
+                        </div>
+
+                        <div className="flex gap-2">
+                            <Button type="submit" disabled={processing}>
+                                {processing ? 'Actualizando...' : 'Actualizar'}
+                            </Button>
+                            <Button type="button" variant="outline" onClick={() => window.history.back()}>
+                                Cancelar
+                            </Button>
+                        </div>
+                    </form>
+                </CardContent>
+            </Card>
+        </AppLayout>
+    );
+}
