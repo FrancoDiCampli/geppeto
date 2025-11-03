@@ -139,14 +139,12 @@ export default function Index({ clientes }: Props) {
                                 <div className="flex gap-2">
                                     <Link href={route('clientes.estado-cuenta', cliente.id)}>
                                         <Button variant="outline" size="sm">
-                                            <FileText className="w-4 h-4 mr-2" />
-                                            Estado
+                                            <FileText className="w-4 h-4" />
                                         </Button>
                                     </Link>
                                     <Link href={route('clientes.exportar-excel', cliente.id)}>
                                         <Button variant="outline" size="sm">
-                                            <Download className="w-4 h-4 mr-2" />
-                                            Excel
+                                            <Download className="w-4 h-4" />
                                         </Button>
                                     </Link>
                                 </div>

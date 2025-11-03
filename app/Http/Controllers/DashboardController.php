@@ -37,11 +37,17 @@ class DashboardController extends Controller
             ->whereDate('fecha', '<=', $fechaFin)
             ->sum('total');
 
-        // Saldo de ventas impagas
-        $saldoImpagas = Factura::whereDate('fecha', '>=', $fechaInicio)
+        // Saldo de ventas impagas (total facturas - pagos realizados)
+        $facturasImpagas = Factura::whereDate('fecha', '>=', $fechaInicio)
             ->whereDate('fecha', '<=', $fechaFin)
             ->where('pagada', 'NO')
-            ->sum('total');
+            ->with('pagos')
+            ->get();
+        
+        $saldoImpagas = $facturasImpagas->sum(function($factura) {
+            $totalPagado = $factura->pagos->sum('monto');
+            return $factura->total - $totalPagado;
+        });
 
         // Ranking de productos más vendidos
         $productosVendidos = DB::table('articulo_factura')
@@ -93,7 +99,16 @@ class DashboardController extends Controller
         $totalVentas = Factura::whereDate('fecha', '>=', $fechaInicio)->whereDate('fecha', '<=', $fechaFin)->sum('total');
         $clientesNuevos = Cliente::whereDate('created_at', '>=', $fechaInicio)->whereDate('created_at', '<=', $fechaFin)->count();
         $ventasDelMes = Factura::whereDate('fecha', '>=', $fechaInicio)->whereDate('fecha', '<=', $fechaFin)->sum('total');
-        $saldoImpagas = Factura::whereDate('fecha', '>=', $fechaInicio)->whereDate('fecha', '<=', $fechaFin)->where('pagada', 'NO')->sum('total');
+        $facturasImpagas = Factura::whereDate('fecha', '>=', $fechaInicio)
+            ->whereDate('fecha', '<=', $fechaFin)
+            ->where('pagada', 'NO')
+            ->with('pagos')
+            ->get();
+        
+        $saldoImpagas = $facturasImpagas->sum(function($factura) {
+            $totalPagado = $factura->pagos->sum('monto');
+            return $factura->total - $totalPagado;
+        });
 
         $productosVendidos = DB::table('articulo_factura')
             ->join('articulos', 'articulo_factura.articulo_id', '=', 'articulos.id')

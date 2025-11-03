@@ -160,8 +160,7 @@ export default function Index({ articulos, filters }: Props) {
                                 <div className="flex gap-2">
                                     <Link href={route('articulos.edit', articulo.id)}>
                                         <Button variant="outline" size="sm">
-                                            <Edit className="w-4 h-4 mr-2" />
-                                            Editar
+                                            <Edit className="w-4 h-4" />
                                         </Button>
                                     </Link>
                                     <DeleteConfirmationDialog 

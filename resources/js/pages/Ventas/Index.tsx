@@ -227,23 +227,20 @@ export default function Index({ facturas }: Props) {
                                 <div className="flex gap-2">
                                     <Link href={route('ventas.show', factura.id)}>
                                         <Button variant="outline" size="sm">
-                                            <Eye className="w-4 h-4 mr-2" />
-                                            Ver
+                                            <Eye className="w-4 h-4" />
                                         </Button>
                                     </Link>
                                     {!factura.cae && (
                                         <Link href={route('ventas.edit', factura.id)}>
                                             <Button variant="outline" size="sm">
-                                                <Edit className="w-4 h-4 mr-2" />
-                                                Editar
+                                                <Edit className="w-4 h-4" />
                                             </Button>
                                         </Link>
                                     )}
                                     {tieneEntregasPendientes(factura) && (
                                         <Link href={route('entregas.create', factura.id)}>
                                             <Button variant="outline" size="sm">
-                                                <Package className="w-4 h-4 mr-2" />
-                                                Entregar
+                                                <Package className="w-4 h-4" />
                                             </Button>
                                         </Link>
                                     )}
@@ -253,23 +250,20 @@ export default function Index({ facturas }: Props) {
                                             size="sm"
                                             onClick={() => autorizarAfip(factura.id)}
                                         >
-                                            <FileText className="w-4 h-4 mr-2" />
-                                            AFIP
+                                            <FileText className="w-4 h-4" />
                                         </Button>
                                     )}
                                     {factura.cae && (
                                         <a href={route('facturas.pdf', factura.id)} target="_blank">
                                             <Button variant="outline" size="sm">
-                                                <Download className="w-4 h-4 mr-2" />
-                                                PDF
+                                                <Download className="w-4 h-4" />
                                             </Button>
                                         </a>
                                     )}
                                     {factura.pagada === 'NO' && (
                                         <Link href={route('pagos.create', factura.id)}>
                                             <Button variant="outline" size="sm">
-                                                <DollarSign className="w-4 h-4 mr-2" />
-                                                Pagar
+                                                <DollarSign className="w-4 h-4" />
                                             </Button>
                                         </Link>
                                     )}
