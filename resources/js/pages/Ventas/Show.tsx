@@ -10,6 +10,8 @@ interface Factura {
     numfactura: number;
     total: number;
     subtotal: number;
+    recargo?: number;
+    descuento?: number;
     fecha: string;
     pagada: string;
     total_pagado: number;
@@ -162,6 +164,18 @@ export default function Show({ factura }: Props) {
                                 <label className="text-sm font-medium text-gray-500">Subtotal</label>
                                 <p className="text-sm">${Number(factura.subtotal).toFixed(2)}</p>
                             </div>
+                            {factura.recargo && Number(factura.recargo) > 0 && (
+                                <div>
+                                    <label className="text-sm font-medium text-gray-500">Recargo</label>
+                                    <p className="text-sm text-orange-600">+${Number(factura.recargo).toFixed(2)}</p>
+                                </div>
+                            )}
+                            {factura.descuento && Number(factura.descuento) > 0 && (
+                                <div>
+                                    <label className="text-sm font-medium text-gray-500">Descuento</label>
+                                    <p className="text-sm text-green-600">-${Number(factura.descuento).toFixed(2)}</p>
+                                </div>
+                            )}
                             <div>
                                 <label className="text-sm font-medium text-gray-500">Total</label>
                                 <p className="text-lg font-bold">${Number(factura.total).toFixed(2)}</p>

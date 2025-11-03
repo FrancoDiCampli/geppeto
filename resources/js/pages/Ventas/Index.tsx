@@ -3,7 +3,7 @@ import AppLayout from '@/layouts/app-layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Plus, Eye, DollarSign, Package, FileText, Download } from 'lucide-react';
+import { Plus, Eye, Edit, DollarSign, Package, FileText, Download } from 'lucide-react';
 import { DeleteConfirmationDialog } from '@/components/delete-confirmation-dialog';
 import { Pagination } from '@/components/pagination';
 import { toast } from 'sonner';
@@ -149,6 +149,13 @@ export default function Index({ facturas }: Props) {
                                                     <Eye className="w-4 h-4" />
                                                 </Button>
                                             </Link>
+                                            {!factura.cae && (
+                                                <Link href={route('ventas.edit', factura.id)}>
+                                                    <Button variant="outline" size="sm">
+                                                        <Edit className="w-4 h-4" />
+                                                    </Button>
+                                                </Link>
+                                            )}
                                             {tieneEntregasPendientes(factura) && (
                                                 <Link href={route('entregas.create', factura.id)}>
                                                     <Button variant="outline" size="sm">
@@ -224,6 +231,14 @@ export default function Index({ facturas }: Props) {
                                             Ver
                                         </Button>
                                     </Link>
+                                    {!factura.cae && (
+                                        <Link href={route('ventas.edit', factura.id)}>
+                                            <Button variant="outline" size="sm">
+                                                <Edit className="w-4 h-4 mr-2" />
+                                                Editar
+                                            </Button>
+                                        </Link>
+                                    )}
                                     {tieneEntregasPendientes(factura) && (
                                         <Link href={route('entregas.create', factura.id)}>
                                             <Button variant="outline" size="sm">

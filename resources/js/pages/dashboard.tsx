@@ -101,6 +101,11 @@ const Dashboard: React.FC<DashboardProps> = ({ totalVentas, clientesNuevos, vent
                             <Button onClick={handleFilter} className="w-full sm:w-auto">
                                 Aplicar Filtro
                             </Button>
+                            <a href={route('dashboard.export', { fecha_inicio: startDate, fecha_fin: endDate })}>
+                                <Button variant="outline" className="w-full sm:w-auto">
+                                    Exportar Excel
+                                </Button>
+                            </a>
                         </div>
                     </CardContent>
                 </Card>

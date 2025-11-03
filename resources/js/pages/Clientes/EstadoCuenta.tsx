@@ -140,7 +140,11 @@ export default function EstadoCuenta({ cliente, facturas, resumen }: Props) {
                                     <div key={factura.id} className="border rounded-lg p-4">
                                         <div className="flex justify-between items-start mb-2">
                                             <div>
-                                                <h3 className="font-semibold">Factura #{factura.numfactura}</h3>
+                                                <Link href={route('ventas.show', factura.id)}>
+                                                    <h3 className="font-semibold text-blue-600 hover:text-blue-800 cursor-pointer">
+                                                        Factura #{factura.numfactura}
+                                                    </h3>
+                                                </Link>
                                                 <p className="text-sm text-gray-600">{formatDate(factura.fecha)}</p>
                                             </div>
                                             <div className="text-right">

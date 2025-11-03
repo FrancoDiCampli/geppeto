@@ -155,4 +155,27 @@ class ClienteController extends Controller
 
         return response()->json($resultado);
     }
+
+    public function estadosCuenta()
+    {
+        $clientes = Cliente::whereHas('facturas', function($query) {
+            $query->where('pagada', 'NO');
+        })->with(['facturas' => function($query) {
+            $query->where('pagada', 'NO')->with('pagos');
+        }])->paginate(10);
+
+        // Calcular saldo pendiente para cada cliente
+        $clientes->getCollection()->transform(function($cliente) {
+            $totalFacturas = $cliente->facturas->sum('total');
+            $totalPagado = $cliente->facturas->sum(function($factura) {
+                return $factura->pagos->sum('monto');
+            });
+            $cliente->saldo_pendiente = $totalFacturas - $totalPagado;
+            return $cliente;
+        });
+
+        return Inertia::render('EstadosCuenta/Index', [
+            'clientes' => $clientes,
+        ]);
+    }
 }

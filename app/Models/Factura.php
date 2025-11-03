@@ -25,6 +25,7 @@ class Factura extends Model
         'fecha',
         'bonificacion',
         'recargo',
+        'descuento',
         'subtotal',
         'total',
         'pagada',

@@ -9,6 +9,7 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', [\App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard')->middleware(['redirect.role', 'role:admin,superadmin']);
+    Route::get('dashboard/export', [\App\Http\Controllers\DashboardController::class, 'exportExcel'])->name('dashboard.export')->middleware(['role:admin,superadmin']);
 
     // Rutas solo para superadmin
     Route::middleware(['role:superadmin'])->group(function () {
@@ -41,6 +42,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('clientes/{cliente}/estado-cuenta', [\App\Http\Controllers\ClienteController::class, 'estadoCuenta'])->name('clientes.estado-cuenta');
     Route::get('clientes/{cliente}/exportar-excel', [\App\Http\Controllers\ClienteController::class, 'exportarExcel'])->name('clientes.exportar-excel');
     Route::get('clientes/{cliente}/exportar-pdf', [\App\Http\Controllers\ClienteController::class, 'exportarPdf'])->name('clientes.exportar-pdf');
+    Route::get('estados-cuenta', [\App\Http\Controllers\ClienteController::class, 'estadosCuenta'])->name('estados-cuenta.index');
     Route::resource('ventas', \App\Http\Controllers\VentaController::class);
     Route::resource('presupuestos', \App\Http\Controllers\PresupuestoController::class);
     Route::post('afip/authorize/{factura}', [\App\Http\Controllers\VentaController::class, 'autorizarAfip'])->name('afip.authorize');

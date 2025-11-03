@@ -56,6 +56,8 @@ export default function Create({ clientes, articulos, listasPrecios, listaDefaul
         cliente_id: '',
         articulos: [] as ArticuloVenta[],
         total: 0,
+        recargo: 0,
+        descuento: 0,
         metodo_pago: 'efectivo',
         monto_pago: 0,
         auto_payment: true,
@@ -94,9 +96,19 @@ export default function Create({ clientes, articulos, listasPrecios, listaDefaul
     };
 
     const updateTotal = (items: ArticuloVenta[]) => {
-        const total = items.reduce((sum, item) => sum + (item.cantidad * item.precio), 0);
+        const subtotal = items.reduce((sum, item) => sum + (item.cantidad * item.precio), 0);
+        const total = subtotal + data.recargo - data.descuento;
         setData('total', total);
         setData('articulos', items);
+        if (data.auto_payment) {
+            setData('monto_pago', total);
+        }
+    };
+
+    const updateTotalWithAdjustments = () => {
+        const subtotal = articulosVenta.reduce((sum, item) => sum + (item.cantidad * item.precio), 0);
+        const total = subtotal + data.recargo - data.descuento;
+        setData('total', total);
         if (data.auto_payment) {
             setData('monto_pago', total);
         }
@@ -351,9 +363,43 @@ export default function Create({ clientes, articulos, listasPrecios, listaDefaul
                                 })}
                             </div>
                             
-                            <div className="mt-6 flex justify-end">
-                                <div className="text-xl font-bold">
-                                    Total: ${data.total.toFixed(2)}
+                            <div className="mt-6 space-y-4">
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div>
+                                        <Label htmlFor="recargo">Recargo</Label>
+                                        <Input
+                                            id="recargo"
+                                            type="text"
+                                            min="0"
+                                            value={data.recargo.toString()}
+                                            onChange={(e) => {
+                                                const value = e.target.value;
+                                                const numValue = value.includes('.') ? parseFloat(value) : parseFloat(value + '.00');
+                                                setData('recargo', isNaN(numValue) ? 0 : numValue);
+                                                setTimeout(updateTotalWithAdjustments, 0);
+                                            }}
+                                        />
+                                    </div>
+                                    <div>
+                                        <Label htmlFor="descuento">Descuento</Label>
+                                        <Input
+                                            id="descuento"
+                                            type="text"
+                                            min="0"
+                                            value={data.descuento.toString()}
+                                            onChange={(e) => {
+                                                const value = e.target.value;
+                                                const numValue = value.includes('.') ? parseFloat(value) : parseFloat(value + '.00');
+                                                setData('descuento', isNaN(numValue) ? 0 : numValue);
+                                                setTimeout(updateTotalWithAdjustments, 0);
+                                            }}
+                                        />
+                                    </div>
+                                    <div className="flex items-end">
+                                        <div className="text-xl font-bold">
+                                            Total: ${data.total.toFixed(2)}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </CardContent>
