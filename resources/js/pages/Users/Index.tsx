@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus, Edit } from 'lucide-react';
 import { DeleteConfirmationDialog } from '@/components/delete-confirmation-dialog';
+import { Pagination } from '@/components/pagination';
 
 interface User {
     id: number;
@@ -16,7 +17,11 @@ interface User {
 }
 
 interface Props {
-    users: User[];
+    users: {
+        data: User[];
+        links: any;
+        meta: any;
+    };
 }
 
 export default function Index({ users }: Props) {
@@ -55,7 +60,7 @@ export default function Index({ users }: Props) {
                             </tr>
                         </thead>
                         <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                            {users.map((user) => (
+                            {users.data.map((user) => (
                                 <tr key={user.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div className="text-sm font-medium text-gray-900 dark:text-gray-100">{user.name}</div>
@@ -90,7 +95,7 @@ export default function Index({ users }: Props) {
 
                 {/* Mobile Cards */}
                 <div className="md:hidden space-y-4">
-                    {users.map((user) => (
+                    {users.data.map((user) => (
                         <Card key={user.id}>
                             <CardHeader>
                                 <CardTitle className="text-lg">{user.name}</CardTitle>
@@ -119,6 +124,8 @@ export default function Index({ users }: Props) {
                         </Card>
                     ))}
                 </div>
+
+                <Pagination links={users.links} />
             </div>
         </AppLayout>
     );

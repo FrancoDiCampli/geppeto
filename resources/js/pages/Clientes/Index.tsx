@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Plus, Edit, Search, FileText } from 'lucide-react';
 import { DeleteConfirmationDialog } from '@/components/delete-confirmation-dialog';
+import { Pagination } from '@/components/pagination';
 import { toast } from 'sonner';
 import { useEffect, useState } from 'react';
 
@@ -17,7 +18,11 @@ interface Cliente {
 }
 
 interface Props {
-    clientes: Cliente[];
+    clientes: {
+        data: Cliente[];
+        links: any;
+        meta: any;
+    };
 }
 
 export default function Index({ clientes }: Props) {
@@ -30,7 +35,7 @@ export default function Index({ clientes }: Props) {
         }
     }, [page.props.flash]);
 
-    const clientesFiltrados = clientes.filter(cliente =>
+    const clientesFiltrados = clientes.data.filter(cliente =>
         cliente.razonsocial.toLowerCase().includes(filtro.toLowerCase()) ||
         cliente.documentounico.toString().includes(filtro) ||
         cliente.email?.toLowerCase().includes(filtro.toLowerCase())
@@ -156,6 +161,8 @@ export default function Index({ clientes }: Props) {
                         </Card>
                     ))}
                 </div>
+
+                <Pagination links={clientes.links} />
             </div>
         </AppLayout>
     );

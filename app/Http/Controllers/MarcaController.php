@@ -11,7 +11,7 @@ class MarcaController extends Controller
     public function index()
     {
         return Inertia::render('Marcas/Index', [
-            'marcas' => Marca::all(),
+            'marcas' => Marca::paginate(10),
         ]);
     }
 

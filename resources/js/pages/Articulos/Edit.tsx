@@ -273,7 +273,7 @@ export default function Edit({ articulo, categorias, marcas, suppliers }: Props)
 
                         <div className="flex gap-2">
                             <Button type="submit" disabled={processing}>
-                                {processing ? 'Actualizando...' : 'Actualizar Cliente'}
+                                {processing ? 'Actualizando...' : 'Actualizar Artículo'}
                             </Button>
                             <Button type="button" variant="outline" onClick={() => window.history.back()}>
                                 Cancelar

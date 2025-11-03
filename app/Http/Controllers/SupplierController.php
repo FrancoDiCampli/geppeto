@@ -11,7 +11,7 @@ class SupplierController extends Controller
     public function index()
     {
         return Inertia::render('Suppliers/Index', [
-            'suppliers' => Supplier::all(),
+            'suppliers' => Supplier::paginate(10),
         ]);
     }
 

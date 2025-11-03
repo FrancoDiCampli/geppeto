@@ -6,15 +6,17 @@ use App\Models\Cliente;
 use App\Models\Localidad;
 use App\Models\Provincia;
 use App\Services\AfipService;
+use App\Traits\HasToastNotifications;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class ClienteController extends Controller
 {
+    use HasToastNotifications;
     public function index()
     {
         return Inertia::render('Clientes/Index', [
-            'clientes' => Cliente::all(),
+            'clientes' => Cliente::paginate(10),
         ]);
     }
 

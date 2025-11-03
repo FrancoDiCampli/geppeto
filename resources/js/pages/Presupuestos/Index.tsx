@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Plus, Eye, Trash2 } from 'lucide-react';
 import { DeleteConfirmationDialog } from '@/components/delete-confirmation-dialog';
+import { Pagination } from '@/components/pagination';
 import { toast } from 'sonner';
 import { useEffect, useState } from 'react';
 
@@ -22,7 +23,11 @@ interface Presupuesto {
 }
 
 interface Props {
-    presupuestos: Presupuesto[];
+    presupuestos: {
+        data: Presupuesto[];
+        links: any;
+        meta: any;
+    };
 }
 
 export default function Index({ presupuestos }: Props) {
@@ -35,7 +40,7 @@ export default function Index({ presupuestos }: Props) {
         }
     }, [page.props.flash]);
 
-    const presupuestosFiltrados = presupuestos.filter(presupuesto =>
+    const presupuestosFiltrados = presupuestos.data.filter(presupuesto =>
         presupuesto.cliente.razonsocial.toLowerCase().includes(filtro.toLowerCase()) ||
         presupuesto.numpresupuesto.toString().includes(filtro) ||
         presupuesto.user.name.toLowerCase().includes(filtro.toLowerCase())
@@ -164,6 +169,8 @@ export default function Index({ presupuestos }: Props) {
                         </Card>
                     ))}
                 </div>
+
+                <Pagination links={presupuestos.links} />
             </div>
         </AppLayout>
     );
