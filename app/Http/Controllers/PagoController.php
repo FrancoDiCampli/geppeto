@@ -44,7 +44,7 @@ class PagoController extends Controller
             'pagada' => $saldoPendiente <= 0 ? 'SI' : 'NO',
         ]);
 
-        return redirect()->route('ventas.show', $factura->id)
+        return redirect()->route('ventas.index')
                         ->with('success', 'Pago registrado exitosamente');
     }
 
@@ -62,7 +62,7 @@ class PagoController extends Controller
             'pagada' => $saldoPendiente <= 0 ? 'SI' : 'NO',
         ]);
 
-        return redirect()->route('ventas.show', $factura->id)
+        return redirect()->route('ventas.index')
                         ->with('success', 'Pago eliminado exitosamente');
     }
 }

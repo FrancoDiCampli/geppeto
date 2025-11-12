@@ -46,7 +46,7 @@ class EntregaController extends Controller
             }
         });
 
-        return redirect()->route('ventas.show', $factura->id)
+        return redirect()->route('ventas.index')
                         ->with('success', 'Entrega registrada exitosamente');
     }
 
@@ -63,7 +63,7 @@ class EntregaController extends Controller
             $entrega->delete();
         });
 
-        return redirect()->route('ventas.show', $entrega->factura_id)
+        return redirect()->route('ventas.index')
                         ->with('success', 'Entrega eliminada exitosamente');
     }
 }
