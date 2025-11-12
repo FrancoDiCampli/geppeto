@@ -1,4 +1,4 @@
-import { Head, Link, usePage } from '@inertiajs/react';
+import { Head, Link, usePage, router } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,7 +7,7 @@ import { Plus, Edit, Search, FileText } from 'lucide-react';
 import { DeleteConfirmationDialog } from '@/components/delete-confirmation-dialog';
 import { Pagination } from '@/components/pagination';
 import { toast } from 'sonner';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 interface Cliente {
     id: number;
@@ -23,11 +23,15 @@ interface Props {
         links: any;
         meta: any;
     };
+    filters: {
+        search?: string;
+    };
 }
 
-export default function Index({ clientes }: Props) {
+export default function Index({ clientes, filters }: Props) {
     const page = usePage<any>();
-    const [filtro, setFiltro] = useState('');
+    const [search, setSearch] = useState(filters.search || '');
+    const timeoutRef = useRef<NodeJS.Timeout>();
     
     useEffect(() => {
         if (page.props.flash?.success) {
@@ -35,11 +39,21 @@ export default function Index({ clientes }: Props) {
         }
     }, [page.props.flash]);
 
-    const clientesFiltrados = clientes.data.filter(cliente =>
-        cliente.razonsocial.toLowerCase().includes(filtro.toLowerCase()) ||
-        cliente.documentounico.toString().includes(filtro) ||
-        cliente.email?.toLowerCase().includes(filtro.toLowerCase())
-    );
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setSearch(value);
+        
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+        }
+        
+        timeoutRef.current = setTimeout(() => {
+            router.get(route('clientes.index'), { search: value }, {
+                preserveState: true,
+                replace: true,
+            });
+        }, 300);
+    };
 
     return (
         <AppLayout>
@@ -61,8 +75,8 @@ export default function Index({ clientes }: Props) {
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                         <Input
                             placeholder="Buscar por nombre, documento o email..."
-                            value={filtro}
-                            onChange={(e) => setFiltro(e.target.value)}
+                            value={search}
+                            onChange={handleSearchChange}
                             className="pl-10"
                         />
                     </div>
@@ -88,7 +102,7 @@ export default function Index({ clientes }: Props) {
                             </tr>
                         </thead>
                         <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                            {clientesFiltrados.map((cliente) => (
+                            {clientes.data.map((cliente) => (
                                 <tr key={cliente.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div className="text-sm font-medium text-gray-900 dark:text-gray-100">{cliente.razonsocial}</div>
@@ -127,7 +141,7 @@ export default function Index({ clientes }: Props) {
 
                 {/* Mobile Cards */}
                 <div className="md:hidden space-y-4">
-                    {clientesFiltrados.map((cliente) => (
+                    {clientes.data.map((cliente) => (
                         <Card key={cliente.id}>
                             <CardHeader>
                                 <CardTitle className="text-lg">{cliente.razonsocial}</CardTitle>

@@ -13,10 +13,25 @@ use Inertia\Inertia;
 class ClienteController extends Controller
 {
     use HasToastNotifications;
-    public function index()
+    public function index(Request $request)
     {
+        $query = Cliente::query();
+        
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('razonsocial', 'like', "%{$search}%")
+                  ->orWhere('documentounico', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+        
+        $totalResults = $query->count();
+        $perPage = $totalResults <= 5 ? $totalResults : 10;
+        
         return Inertia::render('Clientes/Index', [
-            'clientes' => Cliente::paginate(10),
+            'clientes' => $query->paginate($perPage)->withQueryString(),
+            'filters' => $request->only('search'),
         ]);
     }
 
