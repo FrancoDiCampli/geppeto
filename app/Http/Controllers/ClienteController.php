@@ -6,15 +6,32 @@ use App\Models\Cliente;
 use App\Models\Localidad;
 use App\Models\Provincia;
 use App\Services\AfipService;
+use App\Traits\HasToastNotifications;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class ClienteController extends Controller
 {
-    public function index()
+    use HasToastNotifications;
+    public function index(Request $request)
     {
+        $query = Cliente::query();
+        
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('razonsocial', 'like', "%{$search}%")
+                  ->orWhere('documentounico', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+        
+        $totalResults = $query->count();
+        $perPage = $totalResults <= 5 ? $totalResults : 10;
+        
         return Inertia::render('Clientes/Index', [
-            'clientes' => Cliente::all(),
+            'clientes' => $query->paginate($perPage)->withQueryString(),
+            'filters' => $request->only('search'),
         ]);
     }
 
@@ -152,5 +169,28 @@ class ClienteController extends Controller
         \Log::info('AFIP: Resultado del servicio', ['resultado' => $resultado]);
 
         return response()->json($resultado);
+    }
+
+    public function estadosCuenta()
+    {
+        $clientes = Cliente::whereHas('facturas', function($query) {
+            $query->where('pagada', 'NO');
+        })->with(['facturas' => function($query) {
+            $query->where('pagada', 'NO')->with('pagos');
+        }])->paginate(10);
+
+        // Calcular saldo pendiente para cada cliente
+        $clientes->getCollection()->transform(function($cliente) {
+            $totalFacturas = $cliente->facturas->sum('total');
+            $totalPagado = $cliente->facturas->sum(function($factura) {
+                return $factura->pagos->sum('monto');
+            });
+            $cliente->saldo_pendiente = $totalFacturas - $totalPagado;
+            return $cliente;
+        });
+
+        return Inertia::render('EstadosCuenta/Index', [
+            'clientes' => $clientes,
+        ]);
     }
 }

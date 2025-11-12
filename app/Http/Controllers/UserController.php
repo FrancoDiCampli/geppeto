@@ -12,7 +12,7 @@ class UserController extends Controller
     public function index()
     {
         return Inertia::render('Users/Index', [
-            'users' => User::with('role')->get(),
+            'users' => User::with('role')->paginate(10),
         ]);
     }
 

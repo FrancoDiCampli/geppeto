@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus, Edit } from 'lucide-react';
 import { DeleteConfirmationDialog } from '@/components/delete-confirmation-dialog';
+import { Pagination } from '@/components/pagination';
 
 interface Role {
     id: number;
@@ -13,7 +14,11 @@ interface Role {
 }
 
 interface Props {
-    roles: Role[];
+    roles: {
+        data: Role[];
+        links: any;
+        meta: any;
+    };
 }
 
 export default function Index({ roles }: Props) {
@@ -52,7 +57,7 @@ export default function Index({ roles }: Props) {
                             </tr>
                         </thead>
                         <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                            {roles.map((role) => (
+                            {roles.data.map((role) => (
                                 <tr key={role.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div className="text-sm font-medium text-gray-900 dark:text-gray-100">{role.role}</div>
@@ -85,7 +90,7 @@ export default function Index({ roles }: Props) {
 
                 {/* Mobile Cards */}
                 <div className="md:hidden space-y-4">
-                    {roles.map((role) => (
+                    {roles.data.map((role) => (
                         <Card key={role.id}>
                             <CardHeader>
                                 <CardTitle className="text-lg">{role.role}</CardTitle>
@@ -112,6 +117,8 @@ export default function Index({ roles }: Props) {
                         </Card>
                     ))}
                 </div>
+
+                <Pagination links={roles.links} />
             </div>
         </AppLayout>
     );

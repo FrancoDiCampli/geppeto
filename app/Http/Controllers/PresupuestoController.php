@@ -14,7 +14,7 @@ class PresupuestoController extends Controller
     public function index()
     {
         return Inertia::render('Presupuestos/Index', [
-            'presupuestos' => Presupuesto::with(['cliente', 'user'])->latest()->get(),
+            'presupuestos' => Presupuesto::with(['cliente', 'user'])->latest()->paginate(10),
         ]);
     }
 

@@ -6,7 +6,7 @@ import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head, router } from '@inertiajs/react';
 import React, { useState } from 'react';
-import { Line } from 'react-chartjs-2';
+import { Line, Pie } from 'react-chartjs-2';
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -16,6 +16,7 @@ import {
     Title,
     Tooltip,
     Legend,
+    ArcElement,
 } from 'chart.js';
 
 ChartJS.register(
@@ -25,7 +26,8 @@ ChartJS.register(
     LineElement,
     Title,
     Tooltip,
-    Legend
+    Legend,
+    ArcElement
 );
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -99,6 +101,11 @@ const Dashboard: React.FC<DashboardProps> = ({ totalVentas, clientesNuevos, vent
                             <Button onClick={handleFilter} className="w-full sm:w-auto">
                                 Aplicar Filtro
                             </Button>
+                            <a href={route('dashboard.export', { fecha_inicio: startDate, fecha_fin: endDate })}>
+                                <Button variant="outline" className="w-full sm:w-auto">
+                                    Exportar Excel
+                                </Button>
+                            </a>
                         </div>
                     </CardContent>
                 </Card>
@@ -162,16 +169,66 @@ const Dashboard: React.FC<DashboardProps> = ({ totalVentas, clientesNuevos, vent
                             <CardTitle>Ventas por Vendedor</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="space-y-3">
-                                {ventasPorVendedor.map((vendedor, index) => (
-                                    <div key={index} className="flex justify-between items-center py-2 border-b">
-                                        <div>
-                                            <span className="font-medium">{vendedor.name}</span>
-                                            <span className="text-sm text-gray-500 ml-2">{vendedor.total_ventas} ventas</span>
-                                        </div>
-                                        <div className="font-medium">${parseFloat(vendedor.monto_total).toLocaleString()}</div>
+                            <div className="h-64">
+                                {ventasPorVendedor.length > 0 ? (
+                                    <Pie
+                                        data={{
+                                            labels: ventasPorVendedor.map(vendedor => vendedor.name),
+                                            datasets: [
+                                                {
+                                                    label: 'Monto de Ventas',
+                                                    data: ventasPorVendedor.map(vendedor => parseFloat(vendedor.monto_total)),
+                                                    backgroundColor: [
+                                                        'rgba(0, 0, 0, 0.9)',
+                                                        'rgba(64, 64, 64, 0.8)',
+                                                        'rgba(96, 96, 96, 0.8)',
+                                                        'rgba(128, 128, 128, 0.8)',
+                                                        'rgba(160, 160, 160, 0.8)',
+                                                        'rgba(192, 192, 192, 0.8)',
+                                                        'rgba(224, 224, 224, 0.8)',
+                                                        'rgba(240, 240, 240, 0.8)',
+                                                    ],
+                                                    borderColor: [
+                                                        'rgba(0, 0, 0, 1)',
+                                                        'rgba(64, 64, 64, 1)',
+                                                        'rgba(96, 96, 96, 1)',
+                                                        'rgba(128, 128, 128, 1)',
+                                                        'rgba(160, 160, 160, 1)',
+                                                        'rgba(192, 192, 192, 1)',
+                                                        'rgba(224, 224, 224, 1)',
+                                                        'rgba(240, 240, 240, 1)',
+                                                    ],
+                                                    borderWidth: 2,
+                                                }
+                                            ]
+                                        }}
+                                        options={{
+                                            responsive: true,
+                                            maintainAspectRatio: false,
+                                            plugins: {
+                                                legend: {
+                                                    position: 'bottom' as const,
+                                                    labels: {
+                                                        padding: 20,
+                                                        usePointStyle: true,
+                                                    }
+                                                },
+                                                tooltip: {
+                                                    callbacks: {
+                                                        label: function(context) {
+                                                            const vendedor = ventasPorVendedor[context.dataIndex];
+                                                            return `${context.label}: $${Number(context.parsed).toLocaleString()} (${vendedor.total_ventas} ventas)`;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }}
+                                    />
+                                ) : (
+                                    <div className="flex items-center justify-center h-full text-gray-500">
+                                        No hay datos de vendedores en el período seleccionado
                                     </div>
-                                ))}
+                                )}
                             </div>
                         </CardContent>
                     </Card>

@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus, Edit } from 'lucide-react';
 import { DeleteConfirmationDialog } from '@/components/delete-confirmation-dialog';
+import { Pagination } from '@/components/pagination';
 import { toast } from 'sonner';
 import { useEffect } from 'react';
 
@@ -13,7 +14,11 @@ interface Marca {
 }
 
 interface Props {
-    marcas: Marca[];
+    marcas: {
+        data: Marca[];
+        links: any;
+        meta: any;
+    };
 }
 
 export default function Index({ marcas }: Props) {
@@ -54,7 +59,7 @@ export default function Index({ marcas }: Props) {
                             </tr>
                         </thead>
                         <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                            {marcas.map((marca) => (
+                            {marcas.data.map((marca) => (
                                 <tr key={marca.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div className="text-sm font-medium text-gray-900 dark:text-gray-100">{marca.marca}</div>
@@ -81,7 +86,7 @@ export default function Index({ marcas }: Props) {
 
                 {/* Mobile Cards */}
                 <div className="md:hidden space-y-4">
-                    {marcas.map((marca) => (
+                    {marcas.data.map((marca) => (
                         <Card key={marca.id}>
                             <CardHeader>
                                 <CardTitle className="text-lg">{marca.marca}</CardTitle>
@@ -104,6 +109,8 @@ export default function Index({ marcas }: Props) {
                         </Card>
                     ))}
                 </div>
+
+                <Pagination links={marcas.links} />
             </div>
         </AppLayout>
     );

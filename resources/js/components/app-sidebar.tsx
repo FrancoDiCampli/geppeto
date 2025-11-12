@@ -15,8 +15,17 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Clientes',
-        href: '/clientes',
         icon: Users,
+        items: [
+            {
+                title: 'Clientes',
+                href: '/clientes',
+            },
+            {
+                title: 'Estados de Cuenta',
+                href: '/estados-cuenta',
+            },
+        ],
     },
     {
         title: 'Artículos',

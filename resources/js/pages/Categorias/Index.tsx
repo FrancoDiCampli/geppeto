@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus, Edit } from 'lucide-react';
 import { DeleteConfirmationDialog } from '@/components/delete-confirmation-dialog';
+import { Pagination } from '@/components/pagination';
 import { toast } from 'sonner';
 import { useEffect } from 'react';
 
@@ -13,7 +14,11 @@ interface Categoria {
 }
 
 interface Props {
-    categorias: Categoria[];
+    categorias: {
+        data: Categoria[];
+        links: any;
+        meta: any;
+    };
 }
 
 export default function Index({ categorias }: Props) {
@@ -54,7 +59,7 @@ export default function Index({ categorias }: Props) {
                             </tr>
                         </thead>
                         <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                            {categorias.map((categoria) => (
+                            {categorias.data.map((categoria) => (
                                 <tr key={categoria.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div className="text-sm font-medium text-gray-900 dark:text-gray-100">{categoria.categoria}</div>
@@ -81,7 +86,7 @@ export default function Index({ categorias }: Props) {
 
                 {/* Mobile Cards */}
                 <div className="md:hidden space-y-4">
-                    {categorias.map((categoria) => (
+                    {categorias.data.map((categoria) => (
                         <Card key={categoria.id}>
                             <CardHeader>
                                 <CardTitle className="text-lg">{categoria.categoria}</CardTitle>
@@ -104,6 +109,8 @@ export default function Index({ categorias }: Props) {
                         </Card>
                     ))}
                 </div>
+
+                <Pagination links={categorias.links} />
             </div>
         </AppLayout>
     );

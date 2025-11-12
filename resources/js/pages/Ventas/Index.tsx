@@ -3,8 +3,9 @@ import AppLayout from '@/layouts/app-layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Plus, Eye, DollarSign, Package, FileText, Download } from 'lucide-react';
+import { Plus, Eye, Edit, DollarSign, Package, FileText, Download } from 'lucide-react';
 import { DeleteConfirmationDialog } from '@/components/delete-confirmation-dialog';
+import { Pagination } from '@/components/pagination';
 import { toast } from 'sonner';
 import { useEffect, useState } from 'react';
 
@@ -148,6 +149,13 @@ export default function Index({ facturas }: Props) {
                                                     <Eye className="w-4 h-4" />
                                                 </Button>
                                             </Link>
+                                            {!factura.cae && (
+                                                <Link href={route('ventas.edit', factura.id)}>
+                                                    <Button variant="outline" size="sm">
+                                                        <Edit className="w-4 h-4" />
+                                                    </Button>
+                                                </Link>
+                                            )}
                                             {tieneEntregasPendientes(factura) && (
                                                 <Link href={route('entregas.create', factura.id)}>
                                                     <Button variant="outline" size="sm">
@@ -192,28 +200,7 @@ export default function Index({ facturas }: Props) {
                     </table>
                 </div>
 
-                {/* Paginación */}
-                {facturas.last_page > 1 && (
-                    <div className="mt-6 flex justify-center">
-                        <div className="flex gap-2">
-                            {facturas.links.map((link, index) => {
-                                if (link.url === null) return null;
-                                return (
-                                    <Link
-                                        key={index}
-                                        href={link.url}
-                                        className={`px-3 py-2 text-sm rounded ${
-                                            link.active
-                                                ? 'bg-blue-500 text-white'
-                                                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                                        }`}
-                                        dangerouslySetInnerHTML={{ __html: link.label }}
-                                    />
-                                );
-                            })}
-                        </div>
-                    </div>
-                )}
+                <Pagination links={facturas.links} />
 
                 {/* Mobile Cards */}
                 <div className="md:hidden space-y-4">
@@ -240,15 +227,20 @@ export default function Index({ facturas }: Props) {
                                 <div className="flex gap-2">
                                     <Link href={route('ventas.show', factura.id)}>
                                         <Button variant="outline" size="sm">
-                                            <Eye className="w-4 h-4 mr-2" />
-                                            Ver
+                                            <Eye className="w-4 h-4" />
                                         </Button>
                                     </Link>
+                                    {!factura.cae && (
+                                        <Link href={route('ventas.edit', factura.id)}>
+                                            <Button variant="outline" size="sm">
+                                                <Edit className="w-4 h-4" />
+                                            </Button>
+                                        </Link>
+                                    )}
                                     {tieneEntregasPendientes(factura) && (
                                         <Link href={route('entregas.create', factura.id)}>
                                             <Button variant="outline" size="sm">
-                                                <Package className="w-4 h-4 mr-2" />
-                                                Entregar
+                                                <Package className="w-4 h-4" />
                                             </Button>
                                         </Link>
                                     )}
@@ -258,23 +250,20 @@ export default function Index({ facturas }: Props) {
                                             size="sm"
                                             onClick={() => autorizarAfip(factura.id)}
                                         >
-                                            <FileText className="w-4 h-4 mr-2" />
-                                            AFIP
+                                            <FileText className="w-4 h-4" />
                                         </Button>
                                     )}
                                     {factura.cae && (
                                         <a href={route('facturas.pdf', factura.id)} target="_blank">
                                             <Button variant="outline" size="sm">
-                                                <Download className="w-4 h-4 mr-2" />
-                                                PDF
+                                                <Download className="w-4 h-4" />
                                             </Button>
                                         </a>
                                     )}
                                     {factura.pagada === 'NO' && (
                                         <Link href={route('pagos.create', factura.id)}>
                                             <Button variant="outline" size="sm">
-                                                <DollarSign className="w-4 h-4 mr-2" />
-                                                Pagar
+                                                <DollarSign className="w-4 h-4" />
                                             </Button>
                                         </Link>
                                     )}

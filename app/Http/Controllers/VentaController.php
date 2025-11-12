@@ -42,6 +42,8 @@ class VentaController extends Controller
             'articulos.*.articulo_id' => 'required|exists:articulos,id',
             'articulos.*.cantidad' => 'required|integer|min:1',
             'articulos.*.precio' => 'required|numeric|min:0',
+            'recargo' => 'nullable|numeric|min:0',
+            'descuento' => 'nullable|numeric|min:0',
             'metodo_pago' => 'required|string',
             'monto_pago' => 'required|numeric|min:0',
             'auto_payment' => 'boolean',
@@ -62,7 +64,8 @@ class VentaController extends Controller
                 'cuit' => $cliente->documentounico,
                 'fecha' => now()->format('Y-m-d'),
                 'bonificacion' => 0,
-                'recargo' => 0,
+                'recargo' => $request->recargo ?? 0,
+                'descuento' => $request->descuento ?? 0,
                 'subtotal' => 0,
                 'total' => 0,
                 'pagada' => 'SI',
@@ -104,7 +107,9 @@ class VentaController extends Controller
                 $subtotal += $itemSubtotal;
             }
 
-            $total = $subtotal;
+            $recargo = $request->recargo ?? 0;
+            $descuento = $request->descuento ?? 0;
+            $total = $subtotal + $recargo - $descuento;
 
             // Actualizar totales de factura
             $factura->update([
@@ -167,6 +172,46 @@ class VentaController extends Controller
         return Inertia::render('Ventas/Show', [
             'factura' => $venta->load(['cliente', 'user', 'articulos', 'pagos', 'entregas.articulo']),
         ]);
+    }
+
+    public function edit(Factura $venta)
+    {
+        if ($venta->cae) {
+            return redirect()->route('ventas.index')
+                ->with('error', 'No se puede editar una factura ya autorizada en AFIP');
+        }
+
+        return Inertia::render('Ventas/Edit', [
+            'factura' => $venta->load(['cliente', 'user', 'articulos']),
+        ]);
+    }
+
+    public function update(Request $request, Factura $venta)
+    {
+        // Solo permitir edición si no está autorizada en AFIP
+        if ($venta->cae) {
+            return redirect()->route('ventas.index')
+                ->with('error', 'No se puede editar una factura ya autorizada en AFIP');
+        }
+
+        $request->validate([
+            'recargo' => 'nullable|numeric|min:0',
+            'descuento' => 'nullable|numeric|min:0',
+        ]);
+
+        $subtotal = $venta->articulos->sum('pivot.subtotal');
+        $recargo = $request->recargo ?? 0;
+        $descuento = $request->descuento ?? 0;
+        $total = $subtotal + $recargo - $descuento;
+
+        $venta->update([
+            'recargo' => $recargo,
+            'descuento' => $descuento,
+            'total' => $total,
+        ]);
+
+        return redirect()->route('ventas.index')
+            ->with('success', 'Factura actualizada exitosamente');
     }
 
     public function destroy(Factura $venta)
