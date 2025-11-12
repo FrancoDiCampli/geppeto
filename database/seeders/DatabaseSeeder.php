@@ -11,6 +11,7 @@ use Database\Seeders\ProvinciaSeeder;
 use Database\Seeders\RoleSeeder;
 use Database\Seeders\SuppliersTableSeeder;
 use Database\Seeders\UserSeeder;
+use Database\Seeders\VentasSeeder;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -33,5 +34,6 @@ class DatabaseSeeder extends Seeder
         $this->call(InventariosTableSeeder::class);
         $this->call(InitialSettingsSeeder::class);
         $this->call(ListaPrecioSeeder::class);
+        $this->call(VentasSeeder::class);
     }
 }
