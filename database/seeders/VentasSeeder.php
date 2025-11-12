@@ -25,13 +25,12 @@ class VentasSeeder extends Seeder
         $meses = [
             ['mes' => 9, 'año' => 2025], // Septiembre
             ['mes' => 10, 'año' => 2025], // Octubre
-            ['mes' => 11, 'año' => 2025], // Noviembre
         ];
 
         foreach ($meses as $periodo) {
             foreach ($users as $user) {
-                // 10 ventas por usuario por mes
-                for ($i = 1; $i <= 10; $i++) {
+                // 5 ventas por usuario por mes
+                for ($i = 1; $i <= 5; $i++) {
                     $fecha = Carbon::create($periodo['año'], $periodo['mes'], rand(1, 28));
                     $cliente = $clientes->random();
                     
@@ -117,6 +116,6 @@ class VentasSeeder extends Seeder
             }
         }
         
-        $this->command->info('Se crearon ' . (count($meses) * $users->count() * 10) . ' ventas distribuidas en septiembre, octubre y noviembre 2025.');
+        $this->command->info('Se crearon ' . (count($meses) * $users->count() * 5) . ' ventas distribuidas en septiembre y octubre 2025.');
     }
 }
