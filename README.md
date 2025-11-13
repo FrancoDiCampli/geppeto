@@ -157,48 +157,41 @@ gepetto/
 - Creación de presupuestos y facturas
 - Consulta de reportes básicos
 
-## 🚦 Instalación y Configuración
+## 🚦 Instalación
 
-### Requisitos Previos
-- PHP 8.2+
-- Composer
-- Node.js 18+
-- MySQL 8.0+
-- Certificados AFIP válidos
+### Requisitos
+- Docker
+- Docker Compose
+- Git
 
-### Pasos de Instalación
+### Instalación
 ```bash
 # Clonar repositorio
-git clone [repository-url] gepetto
+git clone https://github.com/tu-usuario/gepetto.git
 cd gepetto
 
-# Instalar dependencias PHP
-composer install
+# Construir y levantar contenedores
+docker-compose up -d --build
 
-# Instalar dependencias Node.js
-npm install
+# Generar clave de aplicación
+docker exec gepetto-app php artisan key:generate
 
-# Configurar entorno
-cp .env.example .env
-php artisan key:generate
+# Ejecutar migraciones y seeders
+docker exec gepetto-app php artisan migrate --seed
 
-# Configurar base de datos
-php artisan migrate --seed
-
-# Compilar assets
-npm run build
-
-# Iniciar servidor
-php artisan serve
+# Limpiar cache
+docker exec gepetto-app php artisan config:clear
+docker exec gepetto-app php artisan cache:clear
 ```
 
-### Configuración AFIP
-```env
-AFIP_CUIT=20349590418
-AFIP_ENVIRONMENT=homologacion
-AFIP_CERTIFICATE_PATH=storage/app/private/afip/cert.pem
-AFIP_KEY_PATH=storage/app/private/afip/key.pem
-```
+### Acceso
+HTTP: http://localhost:3000 
+
+HTTPS: https://localhost:3443 
+
+**Credenciales**:
+- Usuario: superadmin@mail.com
+- Contraseña: asdf1234
 
 ## 📝 Historias de Usuario
 
