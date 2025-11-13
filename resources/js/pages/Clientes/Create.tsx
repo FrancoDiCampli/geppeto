@@ -60,8 +60,6 @@ export default function Create({ provincias, localidades }: Props) {
     const consultarAfip = async () => {
         if (!data.documentounico) return;
         
-        console.log('Consultando AFIP con CUIT:', data.documentounico);
-        
         try {
             const response = await fetch(route('afip.consultar-cuit'), {
                 method: 'POST',
@@ -75,10 +73,8 @@ export default function Create({ provincias, localidades }: Props) {
             });
             
             const result = await response.json();
-            console.log('Resultado AFIP:', result);
             
             if (result.success && result.data) {
-                console.log('Actualizando datos con:', result.data);
                 
                 // Actualizar todos los campos directamente
                 setData({
@@ -104,7 +100,6 @@ export default function Create({ provincias, localidades }: Props) {
                 alert('Error: ' + (result.error || 'No se pudieron obtener datos'));
             }
         } catch (error) {
-            console.error('Error:', error);
             alert('Error consultando AFIP');
         }
     };
