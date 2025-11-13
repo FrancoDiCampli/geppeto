@@ -8,7 +8,8 @@ services:
     container_name: gepetto-app
     restart: unless-stopped
     ports:
-      - "80:80"
+      - "3000:80"
+      - "3443:443"
     environment:
       - APP_ENV=production
       - APP_DEBUG=false
@@ -23,6 +24,8 @@ services:
       - ./storage:/var/www/html/storage
       - ./bootstrap/cache:/var/www/html/bootstrap/cache
       - afip_certs:/var/www/html/storage/app/private/afip
+      - ./.env.docker:/var/www/html/.env
+      - ./docker/ssl:/etc/nginx/ssl
     depends_on:
       - mysql
     networks:
@@ -41,7 +44,7 @@ services:
       - mysql_data:/var/lib/mysql
       - ./docker/mysql.cnf:/etc/mysql/conf.d/custom.cnf
     ports:
-      - "3306:3306"
+      - "3307:3306"
     networks:
       - gepetto-network
 

@@ -1,10 +1,8 @@
 [mysqld]
 # Performance
 innodb_buffer_pool_size = 256M
-innodb_log_file_size = 64M
+innodb_redo_log_capacity = 134217728
 max_connections = 200
-query_cache_size = 32M
-query_cache_type = 1
 
 # Character set
 character-set-server = utf8mb4
