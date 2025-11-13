@@ -93,15 +93,7 @@ export default function Edit({ cliente, provincias, localidades }: Props) {
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log('Form data being sent:', data);
-        put(route('clientes.update', cliente.id), {
-            onSuccess: (page) => {
-                console.log('Update successful', page);
-            },
-            onError: (errors) => {
-                console.log('Update errors', errors);
-            }
-        });
+        put(route('clientes.update', cliente.id));
     };
 
     return (
@@ -187,7 +179,6 @@ export default function Edit({ cliente, provincias, localidades }: Props) {
                             <div>
                                 <Label htmlFor="localidad">Localidad *</Label>
                                 <Select value={selectedLocalidad} onValueChange={(value) => {
-                                    console.log('Localidad changed to:', value);
                                     setSelectedLocalidad(value);
                                     setData('localidad', value);
                                 }} disabled={!selectedProvinciaId}>
