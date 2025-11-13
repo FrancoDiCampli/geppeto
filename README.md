@@ -185,11 +185,13 @@ docker exec gepetto-app php artisan cache:clear
 ```
 
 ### Acceso
-**URL**: http://localhost:3000
+HTTP: http://localhost:3000 
+
+HTTPS: https://localhost:3443 
 
 **Credenciales**:
-- Usuario: admin@gepetto.com
-- Contraseña: password
+- Usuario: superadmin@mail.com
+- Contraseña: asdf1234
 
 ## 📝 Historias de Usuario
 

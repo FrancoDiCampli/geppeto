@@ -28,24 +28,8 @@ docker exec gepetto-app php artisan cache:clear
 
 ## Acceso
 
-**URL**: http://localhost:3000
+**URL**: https://localhost:3443
 
 **Credenciales por defecto**:
-- Usuario: admin@gepetto.com
-- Contraseña: password
-
-## Comandos útiles
-
-```bash
-# Ver logs
-docker logs gepetto-app
-
-# Detener contenedores
-docker-compose down
-
-# Reiniciar contenedores
-docker-compose restart
-
-# Acceder al contenedor
-docker exec -it gepetto-app bash
-```
+- Usuario: superadmin@mail.com
+- Contraseña: asdf1234
