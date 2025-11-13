@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: gepetto-app
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    environment:
+      - APP_ENV=production
+      - APP_DEBUG=false
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_DATABASE=gepetto_db
+      - DB_USERNAME=gepetto_user
+      - DB_PASSWORD=gepetto_password
+      - RUN_MIGRATIONS=true
+      - RUN_SEEDERS=false
+    volumes:
+      - ./storage:/var/www/html/storage
+      - ./bootstrap/cache:/var/www/html/bootstrap/cache
+      - afip_certs:/var/www/html/storage/app/private/afip
+    depends_on:
+      - mysql
+    networks:
+      - gepetto-network
+
+  mysql:
+    image: mysql:8.0
+    container_name: gepetto-mysql
+    restart: unless-stopped
+    environment:
+      - MYSQL_ROOT_PASSWORD=root_password
+      - MYSQL_DATABASE=gepetto_db
+      - MYSQL_USER=gepetto_user
+      - MYSQL_PASSWORD=gepetto_password
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./docker/mysql.cnf:/etc/mysql/conf.d/custom.cnf
+    ports:
+      - "3306:3306"
+    networks:
+      - gepetto-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: gepetto-redis
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    networks:
+      - gepetto-network
+
+volumes:
+  mysql_data:
+  redis_data:
+  afip_certs:
+
+networks:
+  gepetto-network:
+    driver: bridge
