@@ -167,7 +167,7 @@ gepetto/
 ### Instalación
 ```bash
 # Clonar repositorio
-git clone https://github.com/tu-usuario/gepetto.git
+git clone https://github.com/FrancoDiCampli/geppeto.git
 cd gepetto
 
 # Construir y levantar contenedores
